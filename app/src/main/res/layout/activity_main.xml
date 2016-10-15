@@ -12,98 +12,13 @@
 
         .
 
-        <LinearLayout
+        <RelativeLayout
             android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true">
-
-                <Button
-                    android:text="Start"
-
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/zText"
-                    android:layout_toEndOf="@+id/xText"
-                    android:layout_marginTop="18dp"
-                    android:layout_marginStart="22dp"
-                    android:id="@+id/startButton"
-                    android:layout_width="match_parent"
-                    android:onClick="saveOnClick" />
-
-                <Button
-            android:text="Stop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/startButton"
-            android:layout_toEndOf="@+id/startButton"
-            android:layout_marginStart="22dp"
-            android:id="@+id/stopButton"
-            android:onClick="stopOnClick" />
-
-                <Button
-            android:text="Display Sensor On Device"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/startButton"
-            android:layout_toEndOf="@+id/startButton"
-            android:layout_marginStart="22dp"
-            android:id="@+id/display"/>
-
-        <TextView
-            android:text="0"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/startButton"
-            android:layout_alignStart="@+id/startButton"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="26dp"
-            android:id="@+id/start" />
-
-        <TextView
-            android:text="alamat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/stop"
-            android:layout_toEndOf="@+id/zText"
-            android:layout_marginTop="18dp"
-            android:id="@+id/simpanDi" />
-
-        <TextView
-            android:text="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/stop"
-            android:layout_alignBaseline="@+id/start"
-            android:layout_alignBottom="@+id/start"
-            android:layout_alignStart="@+id/stopButton" />
-
-        <TextView
-            android:text="Light avaliable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/simpanDi"
-            android:layout_alignStart="@+id/simpanDi"
-            android:layout_marginTop="27dp"
-            android:id="@+id/LIGHT_available" />
-
-        <TextView
-            android:text="Light reading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="31dp"
-            android:id="@+id/LIGHT_reading"
-            android:layout_below="@+id/LIGHT_available"
-            android:layout_alignStart="@+id/startButton" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:id="@+id/relativeLayout2">
 
         <TextView
             android:text="Y"
@@ -130,7 +45,94 @@
             android:id="@+id/zText"
             android:layout_below="@+id/yText"
             android:layout_alignParentStart="true" />
+        </RelativeLayout>
+
+        <Button
+    android:text="Display Sensor On Device"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+            android:id="@+id/display"
+            android:layout_alignParentBottom="true" />
+
+        <Button
+    android:text="Stop"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+            android:id="@+id/stopButton"
+    android:onClick="stopOnClick"
+            android:layout_above="@+id/display"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:text="Start"
+
+            android:layout_height="wrap_content"
+            android:id="@+id/startButton"
+            android:layout_width="match_parent"
+            android:onClick="saveOnClick"
+            android:layout_above="@+id/stopButton"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:text="Speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="96dp"
+            android:id="@+id/speedGPS"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/relativeLayout" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true">
+
         </LinearLayout>
+
+        <TextView
+            android:text="alamat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:id="@+id/simpanDi"
+            android:layout_below="@+id/relativeLayout2"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:text="Light avaliable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/LIGHT_available"
+            android:layout_alignBottom="@+id/relativeLayout2"
+            android:layout_alignStart="@+id/LIGHT_reading" />
+
+        <TextView
+            android:text="Light reading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/LIGHT_reading"
+            android:layout_marginBottom="32dp"
+            android:layout_above="@+id/LIGHT_available"
+            android:layout_alignStart="@+id/speedGPS" />
+
+        <TextView
+    android:text="0"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+            android:id="@+id/start"
+            android:layout_below="@+id/linearLayout3"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+    android:text="1"
+    android:layout_width="189dp"
+    android:layout_height="wrap_content"
+    android:id="@+id/stop"
+            android:layout_alignBaseline="@+id/LIGHT_reading"
+            android:layout_alignBottom="@+id/LIGHT_reading"
+            android:layout_alignStart="@+id/start" />
 
 
 </RelativeLayout>
