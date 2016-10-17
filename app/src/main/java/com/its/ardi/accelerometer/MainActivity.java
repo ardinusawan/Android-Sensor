@@ -241,9 +241,15 @@ public class MainActivity extends Activity implements SensorEventListener  {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        xText.setText("X: " + event.values[0]);
-        yText.setText("Y: " + event.values[1]);
-        zText.setText("Z: " + event.values[2]);
+        String nama = sdcard+"/datasensor.csv";
+        File namafile = new File(nama);
+        simpanDi.setText(nama);
+
+        SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");
+        String currentDateandTime1 = sdf1.format(new Date());
+        String currentDateandTime2 = sdf2.format(new Date());
+        String res="";
 
 
         if(event.sensor.getType() == Sensor.TYPE_LIGHT){
@@ -257,24 +263,25 @@ public class MainActivity extends Activity implements SensorEventListener  {
             }
             textLIGHT_reading.setText("LIGHT: " + event.values[0]);
         }
-            String nama = sdcard+"/datasensor.csv";
-            File namafile = new File(nama);
-            simpanDi.setText(nama);
 
-            SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy");
-            SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");
-            String currentDateandTime1 = sdf1.format(new Date());
-            String currentDateandTime2 = sdf2.format(new Date());
 
-            String res=String.valueOf(currentDateandTime1+"#"+currentDateandTime2+"#"+event.values[0])+"#"+String.valueOf(event.values[1])+"#"+String.valueOf(event.values[2]);
+        if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            xText.setText("X: " + event.values[0]);
+            yText.setText("Y: " + event.values[1]);
+            zText.setText("Z: " + event.values[2]);
+            res=String.valueOf(currentDateandTime1+"#"+currentDateandTime2+"#"+event.values[0])+"#"+String.valueOf(event.values[1])+"#"+String.valueOf(event.values[2]);
 
-            //Log.d("test", res);
+            if (event.values[1] > 0 && event.values[2] > 0 && Double.valueOf((String) speed.getText()) < 10)
+                res = res + "#Jalan";
+            else if(event.values[1]<0 && event.values[2]<0)
+                res = res + "#Naik Motor";
+            else res = res + "#_";
             try {
 
                 if(startRecord&&active&&flag){
                     if(writer==null){
                         writer = new CSVWriter(new FileWriter(namafile,true), ',');
-                        String resStart = "Tanggal#Jam#X-axis#Y-axis#Z-axis";
+                        String resStart = "Tanggal#Jam#X-axis#Y-axis#Z-axis#Aktifitas";
                         String[] entriesStart = resStart.split("#"); // array of your values
                         writer.writeNext(entriesStart);
                     }
@@ -285,7 +292,6 @@ public class MainActivity extends Activity implements SensorEventListener  {
                 else if(stopRecord&&!active){
 
                     if(writer!=null){
-
                         writer.close();
                         writer = null;
                     }
@@ -293,6 +299,8 @@ public class MainActivity extends Activity implements SensorEventListener  {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+        }
     }
 
 
