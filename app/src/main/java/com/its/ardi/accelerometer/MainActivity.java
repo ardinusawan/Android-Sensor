@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
@@ -239,6 +240,7 @@ public class MainActivity extends Activity implements SensorEventListener  {
             moveTaskToBack(true);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     @Override
     public void onSensorChanged(SensorEvent event) {
         String nama = sdcard+"/datasensor.csv";
@@ -271,7 +273,7 @@ public class MainActivity extends Activity implements SensorEventListener  {
             zText.setText("Z: " + event.values[2]);
             res=String.valueOf(currentDateandTime1+"#"+currentDateandTime2+"#"+event.values[0])+"#"+String.valueOf(event.values[1])+"#"+String.valueOf(event.values[2]);
 
-            if (event.values[1] > 0 && event.values[2] > 0 && Double.valueOf((String) speed.getText()) < 10)
+            if (event.values[1] > 0 && event.values[2] > 0 && LocationService.speed < 10)
                 res = res + "#Jalan";
             else if(event.values[1]<0 && event.values[2]<0)
                 res = res + "#Naik Motor";

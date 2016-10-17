@@ -29,8 +29,9 @@ public class LocationService extends Service implements
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
     Location mCurrentLocation, lStart, lEnd;
+    static double speed = 0;
     static double distance = 0;
-    double speed;
+//    double speed;
 
 
     private final IBinder mBinder = new LocalBinder();
