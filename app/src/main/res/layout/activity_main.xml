@@ -45,6 +45,8 @@
             android:id="@+id/zText"
             android:layout_below="@+id/yText"
             android:layout_alignParentStart="true" />
+
+
         </RelativeLayout>
 
         <Button
@@ -80,7 +82,8 @@
             android:layout_marginStart="96dp"
             android:id="@+id/speedGPS"
             android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/relativeLayout" />
+            android:layout_toEndOf="@+id/relativeLayout2"
+            android:visibility="invisible"/>
 
         <LinearLayout
             android:orientation="vertical"
@@ -99,6 +102,43 @@
             android:id="@+id/simpanDi"
             android:layout_below="@+id/relativeLayout2"
             android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/distancetext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="Total Distance:"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:layout_below="@+id/simpanDi"/>
+
+    <TextView
+        android:id="@+id/speedtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="Instantaneous Speed:"
+        android:textColor="@android:color/black"
+        android:layout_below="@+id/distancetext"
+        />
+
+    <TextView
+        android:id="@+id/timetext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="Total Time:"
+        android:textColor="@android:color/black"
+        android:layout_below="@+id/speedtext"
+        />
+
 
         <TextView
             android:text="Light avaliable"
@@ -122,7 +162,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
             android:id="@+id/start"
-            android:layout_below="@+id/linearLayout3"
+
             android:layout_alignParentEnd="true" />
 
         <TextView

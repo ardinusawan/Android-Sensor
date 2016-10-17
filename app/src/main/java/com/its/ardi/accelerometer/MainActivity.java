@@ -2,41 +2,36 @@ package com.its.ardi.accelerometer;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Bundle;
-
 import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.LocationManager;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.opencsv.CSVWriter;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.FileNameMap;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends Activity implements SensorEventListener  {
@@ -53,6 +48,14 @@ public class MainActivity extends Activity implements SensorEventListener  {
     private CSVWriter writer = null;
     private boolean flag = false;
     private Button Display;
+    LocationService myService;
+    static boolean status;
+    LocationManager locationManager;
+    static TextView dist, time, speed;
+    static long startTime, endTime;
+    ImageView image;
+    static ProgressDialog locate;
+    static int p = 0;
 
 
     @Override
@@ -70,6 +73,11 @@ public class MainActivity extends Activity implements SensorEventListener  {
         xText = (TextView)findViewById(R.id.xText);
         yText = (TextView)findViewById(R.id.yText);
         zText = (TextView)findViewById(R.id.zText);
+
+        dist = (TextView) findViewById(R.id.distancetext);
+        time = (TextView) findViewById(R.id.timetext);
+        speed = (TextView) findViewById(R.id.speedtext);
+
         startButton = (Button)findViewById(R.id.startButton);
         stopButton = (Button)findViewById(R.id.stopButton);
         Display = (Button) findViewById(R.id.display);
@@ -100,6 +108,23 @@ public class MainActivity extends Activity implements SensorEventListener  {
                     start.setText("1");
                     stop.setText("0");
                     stopRecord = false;
+                    checkGps();
+                    locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+                    if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+
+                        return;
+                    }
+
+
+                    if (status == false)
+                        //Here, the Location Service gets bound and the GPS Speedometer gets Active.
+                        bindService();
+                    locate = new ProgressDialog(MainActivity.this);
+                    locate.setIndeterminate(true);
+                    locate.setCancelable(false);
+                    locate.setMessage("Getting Location...");
+                    locate.show();
                 }
             }
         });
@@ -114,9 +139,104 @@ public class MainActivity extends Activity implements SensorEventListener  {
                 stop.setText("1");
                 stopRecord = true;
                 startRecord = false;
+                if (status == true)
+                    unbindService();
+                p = 0;
 
             }
         });
+    }
+
+    void checkGps() {
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+
+
+            showGPSDisabledAlertToUser();
+        }
+    }
+
+    //This method configures the Alert Dialog box.
+    private void showGPSDisabledAlertToUser() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Enable GPS to use application")
+                .setCancelable(false)
+                .setPositiveButton("Enable GPS",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent callGPSSettingIntent = new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(callGPSSettingIntent);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
+
+    private ServiceConnection sc = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
+            myService = binder.getService();
+            status = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            status = false;
+        }
+    };
+
+    void bindService() {
+        if (status == true)
+            return;
+        Intent i = new Intent(getApplicationContext(), LocationService.class);
+        bindService(i, sc, BIND_AUTO_CREATE);
+        status = true;
+        startTime = System.currentTimeMillis();
+    }
+
+    void unbindService() {
+        if (status == false)
+            return;
+        Intent i = new Intent(getApplicationContext(), LocationService.class);
+        unbindService(sc);
+        status = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (status == true)
+            unbindService();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (status == false)
+            super.onBackPressed();
+        else
+            moveTaskToBack(true);
     }
 
     @Override
@@ -148,7 +268,7 @@ public class MainActivity extends Activity implements SensorEventListener  {
 
             String res=String.valueOf(currentDateandTime1+"#"+currentDateandTime2+"#"+event.values[0])+"#"+String.valueOf(event.values[1])+"#"+String.valueOf(event.values[2]);
 
-            Log.d("test", res);
+            //Log.d("test", res);
             try {
 
                 if(startRecord&&active&&flag){
