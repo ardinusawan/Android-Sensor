@@ -67,7 +67,7 @@ public class MainActivity extends Activity implements SensorEventListener  {
         SM = (SensorManager)getSystemService(SENSOR_SERVICE);
 
         mySensorAcc = SM.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mySensorLight = SM.getDefaultSensor(Sensor.TYPE_LIGHT);
+        mySensorLight = SM.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         SM.registerListener(this, mySensorAcc, SensorManager.SENSOR_DELAY_NORMAL);
         SM.registerListener(this, mySensorLight, SensorManager.SENSOR_DELAY_NORMAL);
 
@@ -254,12 +254,12 @@ public class MainActivity extends Activity implements SensorEventListener  {
         String res="";
 
 
-        if(event.sensor.getType() == Sensor.TYPE_LIGHT){
-            if(event.values[0]<=30.0){
+        if(event.sensor.getType() == Sensor.TYPE_PROXIMITY){
+            if(event.values[0]>=8){
                 textLIGHT_available.setText("Activated");
                 active = true;
             }
-            else if(event.values[0]>30.0){
+            else if(event.values[0]<8){
                 textLIGHT_available.setText("Not Activated");
                 active = false;
             }
@@ -275,7 +275,7 @@ public class MainActivity extends Activity implements SensorEventListener  {
 
             if (event.values[1] > 0 && event.values[2] > 0 && LocationService.speed < 10)
                 res = res + "#Jalan";
-            else if(event.values[1]<0 && event.values[2]<0)
+            else if((event.values[1]<0 && event.values[2]<0) || LocationService.speed > 20)
                 res = res + "#Naik Motor";
             else res = res + "#_";
             try {

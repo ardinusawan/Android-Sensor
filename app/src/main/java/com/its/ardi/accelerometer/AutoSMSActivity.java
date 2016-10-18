@@ -29,7 +29,9 @@ public class AutoSMSActivity extends BroadcastReceiver {
                 }
                 String message = "Auto Reply: Maaf saya sedang dalam posisi berkendara";
                 SmsManager smsSend = SmsManager.getDefault();
-                smsSend.sendTextMessage(numberto,null,message,null,null);
+                if(LocationService.speed > 20){
+                    smsSend.sendTextMessage(numberto,null,message,null,null);
+                }
             }
         }
     }
