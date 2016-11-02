@@ -19,7 +19,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,12 +29,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".DisplayActivity" />
-
-        <receiver android:name=".AutoSMSActivity" >
-            <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
-        </receiver>
         <service android:name=".LocationService"></service>
         <meta-data
             android:name="com.google.android.gms.version"

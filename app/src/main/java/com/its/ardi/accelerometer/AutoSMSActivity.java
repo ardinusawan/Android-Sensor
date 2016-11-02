@@ -21,7 +21,7 @@ public class AutoSMSActivity extends BroadcastReceiver {
             if (bundle!=null){
                 Object[] pdus = (Object[])bundle.get("pdus");
                 final SmsMessage[] sms = new SmsMessage[pdus.length];
-                String content="gskfnknf", numberto="087853596908";
+                String content="", numberto="";
                 for(int i=0; i<pdus.length; i++){
                     sms[i]=SmsMessage.createFromPdu((byte[])pdus[i]);
                     content = sms[i].getMessageBody();
@@ -29,9 +29,7 @@ public class AutoSMSActivity extends BroadcastReceiver {
                 }
                 String message = "Auto Reply: Maaf saya sedang dalam posisi berkendara";
                 SmsManager smsSend = SmsManager.getDefault();
-                if(LocationService.speed > 20){
-                    smsSend.sendTextMessage(numberto,null,message,null,null);
-                }
+                smsSend.sendTextMessage(numberto,null,message,null,null);
             }
         }
     }

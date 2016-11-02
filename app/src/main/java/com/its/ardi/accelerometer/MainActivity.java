@@ -4,9 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -49,6 +51,7 @@ public class MainActivity extends Activity implements SensorEventListener  {
     private CSVWriter writer = null;
     private boolean flag = false;
     private Button Display;
+    public int status_act = 0;
     LocationService myService;
     static boolean status;
     LocationManager locationManager;
@@ -57,7 +60,7 @@ public class MainActivity extends Activity implements SensorEventListener  {
     ImageView image;
     static ProgressDialog locate;
     static int p = 0;
-
+    BroadcastReceiver br = new AutoSMSActivity();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,6 +149,7 @@ public class MainActivity extends Activity implements SensorEventListener  {
 
             }
         });
+
     }
 
     void checkGps() {
@@ -215,13 +219,11 @@ public class MainActivity extends Activity implements SensorEventListener  {
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
+    protected void onPause() {
+        super.onPause();
     }
 
 
@@ -255,11 +257,11 @@ public class MainActivity extends Activity implements SensorEventListener  {
 
 
         if(event.sensor.getType() == Sensor.TYPE_PROXIMITY){
-            if(event.values[0]>=8){
+            if(event.values[0]>=1){
                 textLIGHT_available.setText("Activated");
                 active = true;
             }
-            else if(event.values[0]<8){
+            else if(event.values[0]<1){
                 textLIGHT_available.setText("Not Activated");
                 active = false;
             }
@@ -273,11 +275,31 @@ public class MainActivity extends Activity implements SensorEventListener  {
             zText.setText("Z: " + event.values[2]);
             res=String.valueOf(currentDateandTime1+"#"+currentDateandTime2+"#"+event.values[0])+"#"+String.valueOf(event.values[1])+"#"+String.valueOf(event.values[2]);
 
-            if (event.values[1] > 0 && event.values[2] > 0 && LocationService.speed < 10)
+            if (event.values[1] > 0 && event.values[2] > 0 && LocationService.speed < 20) {
                 res = res + "#Jalan";
-            else if((event.values[1]<0 && event.values[2]<0) || LocationService.speed > 20)
+                if(status_act ==1 ) {
+                    unregisterReceiver(br);
+                    status_act = 0;
+                }
+                //
+            }
+            else if((event.values[1]<0 && event.values[2]<0) || LocationService.speed > 20){
                 res = res + "#Naik Motor";
-            else res = res + "#_";
+                if(status_act == 0){
+                    IntentFilter filter = new IntentFilter();
+                    filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+                    registerReceiver(br, filter);
+                    status_act = 1;
+                }
+            }
+
+            else {
+                res = res + "#_";
+                if(status_act ==1 ){
+                    unregisterReceiver(br);
+                    status_act = 0;
+                }
+            }
             try {
 
                 if(startRecord&&active&&flag){
