@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
+import android.util.Log;
 
 /**
  * Created by Fikri on 10/11/2016.
@@ -27,7 +28,8 @@ public class AutoSMSActivity extends BroadcastReceiver {
                     content = sms[i].getMessageBody();
                     numberto = sms[i].getOriginatingAddress();
                 }
-                String message = "Auto Reply: Maaf saya sedang dalam posisi berkendara";
+                String message = "Auto Reply: Maaf saya sedang dalam posisi berkendara, lokasi: " + MainActivity.loc;
+                Log.d("var",MainActivity.var);
                 //String location = locationAddress
                 SmsManager smsSend = SmsManager.getDefault();
                 if(LocationService.speed > 20){

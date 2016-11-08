@@ -20,7 +20,7 @@ class GeocoderHandler extends Handler {
             default:
                 locationAddress= null;
         }
-
+        MainActivity.loc = locationAddress;
         //tvAddress.setText(locationAddress);
         //Log.d("address",locationAddress);
     }

@@ -57,6 +57,7 @@ public class MainActivity extends Activity implements SensorEventListener  {
     ImageView image;
     static ProgressDialog locate;
     static int p = 0;
+    public static String loc;
 
 
     @Override
