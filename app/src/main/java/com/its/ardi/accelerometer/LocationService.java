@@ -102,6 +102,11 @@ public class LocationService extends Service implements
         //calculating the speed with getSpeed method it returns speed in m/s so we are converting it into kmph
         speed = location.getSpeed() * 18 / 5;
 
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        LocationAddress locationAddress = new LocationAddress();
+        locationAddress.getAddressFromLocation(latitude , longitude , getApplicationContext(), new GeocoderHandler());
+
     }
 
     @Override

@@ -28,6 +28,7 @@ public class AutoSMSActivity extends BroadcastReceiver {
                     numberto = sms[i].getOriginatingAddress();
                 }
                 String message = "Auto Reply: Maaf saya sedang dalam posisi berkendara";
+                //String location = locationAddress
                 SmsManager smsSend = SmsManager.getDefault();
                 if(LocationService.speed > 20){
                     smsSend.sendTextMessage(numberto,null,message,null,null);
