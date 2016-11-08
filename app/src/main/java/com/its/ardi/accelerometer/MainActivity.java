@@ -30,11 +30,19 @@ import android.widget.TextView;
 
 import com.opencsv.CSVWriter;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import weka.classifiers.Classifier;
+import weka.classifiers.lazy.IBk;
+import weka.core.Instance;
+import weka.core.Instances;
 
 
 public class MainActivity extends Activity implements SensorEventListener  {
@@ -133,6 +141,12 @@ public class MainActivity extends Activity implements SensorEventListener  {
             }
         });
 
+        try {
+            KNN();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         //eksekusi saat klik button stop
         stopButton.setOnClickListener(new View.OnClickListener() {
 
@@ -151,6 +165,7 @@ public class MainActivity extends Activity implements SensorEventListener  {
         });
 
     }
+
 
     void checkGps() {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -240,6 +255,33 @@ public class MainActivity extends Activity implements SensorEventListener  {
             super.onBackPressed();
         else
             moveTaskToBack(true);
+    }
+    public static BufferedReader readDataFile(String filename) {
+        BufferedReader inputReader = null;
+
+        try {
+            inputReader = new BufferedReader(new FileReader(filename));
+        } catch (FileNotFoundException ex) {
+            System.err.println("File not found: " + filename);
+        }
+
+        return inputReader;
+    }
+    public  void KNN() throws Exception {
+        BufferedReader datafile = readDataFile(sdcard+"/data_latih.data");
+
+        Instances data = new Instances(datafile);
+        data.setClassIndex(data.numAttributes() - 1);
+
+        //do not use first and second
+        Instance first = data.instance(0);
+        data.delete(0);
+
+        Classifier ibk = new IBk();
+        ibk.buildClassifier(data);
+
+        double class1 = ibk.classifyInstance(first);
+        System.out.println("first: " + class1);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
